@@ -223,7 +223,7 @@ The result: the import table shows nothing interesting, but the binary can call 
 │                 │                                               │
 │                 ├── Ldr (PEB_LDR_DATA*)                         │
 │                 │    │                                          │
-│                 │    └── InLoadOrderModuleList                 │
+│                 │    └── InLoadOrderModuleList                  │
 │                 │         │                                     │
 │                 │         ├── basic-loader.exe (always first)   │
 │                 │         ├── ntdll.dll                         │
@@ -231,7 +231,7 @@ The result: the import table shows nothing interesting, but the binary can call 
 │                 │         ├── kernelbase.dll                    │
 │                 │         └── ... (other loaded DLLs)           │
 │                 │                                               │
-│  For each DLL:  Hash DLL name (case-insensitive additive hash) │
+│  For each DLL:  Hash DLL name (case-insensitive additive hash)  │
 │                 Compare hash vs target_dll_hash                 │
 │                 If match → parse PE export table:               │
 │                                                                 │
@@ -289,7 +289,7 @@ This binary contains **two independent API hashing systems** that serve differen
 │  - The shellcode is hand-crafted x86-64 assembly              │
 │  - They were developed by different people/tools              │
 │  - The shellcode's ROR13 is a Metasploit convention (1999+)   │
-│  - The loader's additive hash is a custom algorithm            │
+│  - The loader's additive hash is a custom algorithm           │
 │                                                               │
 │  An analyst who finds the additive hash seed (0x1F2E3D4C) and │
 │  builds a rainbow table will resolve the LOADER's APIs.       │
@@ -583,11 +583,11 @@ By going fully self-contained with a **different hash algorithm** (additive vs. 
 │                  basic-loader.exe                       │
 │                                                         │
 │  IAT (visible to static analysis):                      │
-│  ├── kernel32.dll: GetSystemInfo, GlobalMemoryStatusEx,  │
-│  │   GetTickCount64, GetDiskFreeSpaceExW, CreateProcessW │
-│  ├── kernel32.dll: Rust stdlib (GetEnvironmentVariableW, │
+│  ├── kernel32.dll: GetSystemInfo, GlobalMemoryStatusEx, │
+│  │   GetTickCount64, GetDiskFreeSpaceExW, CreateProcessW│
+│  ├── kernel32.dll: Rust stdlib (GetEnvironmentVariableW,│
 │  │   GetModuleHandleW, etc.)                            │
-│  └── (NO user32.dll, NO iat_pad, NO gdi32/ws2_32/etc.) │
+│  └── (NO user32.dll, NO iat_pad, NO gdi32/ws2_32/etc.)  │
 │                                                         │
 │  Runtime-resolved (invisible to static analysis):       │
 │  ├── VirtualAlloc      (via inline PEB walker)          │
