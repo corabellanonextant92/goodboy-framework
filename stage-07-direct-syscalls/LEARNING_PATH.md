@@ -472,10 +472,10 @@ The strongest runtime detection for direct syscalls is **return address validati
 Normal call (through ntdll):            Direct syscall:
 ┌──────────────────────────┐           ┌──────────────────────────┐
 │ Call Stack:              │           │ Call Stack:              │
-│   ntdll!NtAllocVirtMem   │ ← ret    │   direct-syscalls.exe    │ ← ret
-│   kernelbase!VirtualAlloc│           │   (no ntdll frame!)     │
-│   kernel32!VirtualAlloc  │           │                         │
-│   malware.exe!main       │           │                         │
+│   ntdll!NtAllocVirtMem   │ ← ret     │   direct-syscalls.exe    │ ← ret
+│   kernelbase!VirtualAlloc│           │   (no ntdll frame!)      │
+│   kernel32!VirtualAlloc  │           │                          │
+│   malware.exe!main       │           │                          │
 └──────────────────────────┘           └──────────────────────────┘
 ```
 
@@ -742,26 +742,26 @@ direct-syscalls.exe:
   PEB.BeingDebugged check        [gate 4 — anti-debug]
   sandbox_check()                [gate 5 — CPU/RAM/disk/uptime]
 
-  ┌─── Phase 1: SSN Resolution (NEW) ──────────────────────────┐
-  │ find_module(H_NTDLL) → ntdll base address                  │
+  ┌─── Phase 1: SSN Resolution (NEW) ───────────────────────────┐
+  │ find_module(H_NTDLL) → ntdll base address                   │
   │ find_export(NtAllocateVirtualMemory) → stub address         │
   │ find_export(NtProtectVirtualMemory)  → stub address         │
   │ find_export(NtCreateThreadEx)        → stub address         │
-  │ read_ssn() × 3 → SSN for each (+ hook detection)           │
+  │ read_ssn() × 3 → SSN for each (+ hook detection)            │
   └─────────────────────────────────────────────────────────────┘
 
-  ┌─── Phase 2: kernel32 Resolution (benign) ──────────────────┐
-  │ resolve_api(H_KERNEL32, H_WAITFORSINGLEOBJECT) → fn ptr    │
-  │ resolve_api(H_KERNEL32, H_CLOSEHANDLE)         → fn ptr    │
+  ┌─── Phase 2: kernel32 Resolution (benign) ───────────────────┐
+  │ resolve_api(H_KERNEL32, H_WAITFORSINGLEOBJECT) → fn ptr     │
+  │ resolve_api(H_KERNEL32, H_CLOSEHANDLE)         → fn ptr     │
   └─────────────────────────────────────────────────────────────┘
 
   XOR decrypt 302-byte shellcode    [same as Stages 01-04]
 
-  ┌─── Phase 3: Direct Syscalls (NEW) ─────────────────────────┐
-  │ syscall_alloc(SSN, ..., RW)     → NtAllocateVirtualMemory  │
+  ┌─── Phase 3: Direct Syscalls (NEW) ──────────────────────────┐
+  │ syscall_alloc(SSN, ..., RW)     → NtAllocateVirtualMemory   │
   │ copy shellcode to allocated memory                          │
   │ write_volatile scrub of heap                                │
-  │ syscall_protect(SSN, ..., RX)   → NtProtectVirtualMemory   │
+  │ syscall_protect(SSN, ..., RX)   → NtProtectVirtualMemory    │
   │ syscall_create_thread(SSN, ...) → NtCreateThreadEx          │
   └─────────────────────────────────────────────────────────────┘
 
