@@ -45,7 +45,7 @@ Each stage adds one new offensive technique on top of the previous. Each Learnin
 | [**10**](stage-10-anti-sandbox/) | **Anti-Sandbox** | Hardware fingerprinting, weighted scoring, CFG-safe sandbox detection, dual anti-analysis | 1,008 | Released |
 | [**11**](stage-11-persistence/) | **Persistence** | Registry Run key, path obfuscation, direct IAT imports, set-execute-cleanup lifecycle | 1,144 | Released |
 | [**12**](stage-12-module-stomping/) | **Module Stomping** | Overwrite DLL .text at entry point, CFG-valid execution, inline PE parsing, pe-sieve evasion | 1,230 | Released |
-| 13 | Sleep Obfuscation | Encrypt payload during sleep, 95% scanner miss rate | — | Planned |
+| [**13**](stage-13-sleep-obfuscation/) | **Sleep Obfuscation** | XOR encrypt during sleep, VirtualProtect RX↔RW cycling, 95% scanner miss rate | 1,254 | Released |
 | 14 | Combined Loader | 8-layer evasion stack, MBA obfuscation, multi-phase chain | — | Planned |
 | 15 | C2 Agent | Full command-and-control with encrypted HTTPS beaconing | — | Planned |
 
@@ -163,8 +163,8 @@ The Learning Paths document the full forensic timeline of each binary's VT histo
 
 | Metric | Value |
 |--------|-------|
-| Stages | 15 (12 released, 3 planned) |
-| Total learning content | 15,000+ lines (released stages) |
+| Stages | 15 (13 released, 2 planned) |
+| Total learning content | 16,200+ lines (released stages) |
 | Exercises | 60+ hands-on (released stages) |
 | YARA rules | 18+ (with adversarial countermeasures) |
 | Sigma rules | 7+ (behavioral detection) |
