@@ -198,7 +198,7 @@ Compile-time:                        Runtime (after 7 gates):
 The `xor::xor_inplace()` function from the common library applies the key cyclically:
 
 ```
-shellcode[0] = 0xe9 ^ 0xd8 = 0x31  (xor opcode)
+shellcode[0] = 0x31 ^ 0xd8 = 0xe9  (JMP opcode)
 shellcode[1] = 0xf5 ^ 0x4b = 0xbe  (JMP offset low byte)
 shellcode[2] = 0x29 ^ 0x29 = 0x00  (JMP offset high byte)
 ```
@@ -592,7 +592,7 @@ main()
   +-- Gate 1: init_app_environment()     [env vars + BTreeMap]
   +-- Gate 2: benign::preflight()         [code dilution]
   +-- dbg("2_checks_ok")
-  +-- Gate 3: KUSER_SHARED_DATA > 5min   [0x7FFE0320 read]
+  +-- Gate 3: KUSER_SHARED_DATA > ~78min  [0x7FFE0320 TickCountQuad]
   +-- Gate 4: run_window_lifecycle()       ["PwrMgrWnd" GUI]
   +-- dbg("3_window_done")
   +-- Gate 5: bail_if_debugged()           [PEB + NtQIP + RDTSC + HW BP]
@@ -755,10 +755,14 @@ Timing Analysis per Cycle:
   Payload hidden window:  T_sleep  ≈ 50ms
 
   P(catch in one cycle) = T_execute / T_total ≈ 100 / 152 ≈ 65.8%
-  P(miss in one cycle)  = 1 - 0.048 = 0.952
+  P(miss in one cycle)  = 1 - 0.658 = 0.342
 
-For 3 cycles (assuming single random-time scan):
-  P(catch at least once) = 1 - (0.952)^3 ≈ 13.8%
+For 3 cycles (assuming single random-time scan per cycle):
+  P(catch at least once) = 1 - (0.342)^3 ≈ 96.0%
+
+NOTE: With 50ms sleep, the plaintext window (100ms) is LARGER than the sleep
+window (50ms). This demo uses short cycles for fast testing. Production
+implants use 5-60 second sleep intervals, which flip the ratio dramatically:
 
 For production implant (60s sleep, 100ms execute):
   P(catch per cycle) = 100 / 60100 ≈ 0.17%
@@ -1104,21 +1108,26 @@ Scanner at 200ms interval: probability of catching the plaintext between cycles 
 <details>
 <summary>Detailed calculation</summary>
 
-Each cycle has a ~100ms vulnerable window (payload decrypted + RX) out of ~152ms total cycle time.
+Each cycle is ~152ms total (50ms sleep + ~100ms execute + ~2ms encrypt/decrypt).
+The vulnerable window (plaintext + RX) is ~100ms per cycle.
 
-Scanner runs at fixed 500ms intervals. Per cycle, the scanner fires approximately `152 / 500 ≈ 4.2` times. For each scan, the probability of landing in the 100ms vulnerable window:
+Scanner fires every 500ms. Since a full cycle (152ms) is shorter than the scan
+interval (500ms), the scanner gets at most 1 scan attempt per cycle. If the scan
+lands during the 100ms execute window, it catches the plaintext.
 
 ```
-P(catch per scan) = 100 / 152 ≈ 0.048
+P(catch per random scan) = T_execute / T_total = 100 / 152 ≈ 65.8%
+P(miss per scan) = 1 - 0.658 = 0.342
 
-Scans per cycle ≈ 4 (at 500ms intervals within a 152ms cycle)
-P(miss all scans in one cycle) = (1 - 0.048)^4 ≈ 0.821
-P(catch in one cycle) = 1 - 0.821 ≈ 0.179
-
-Over 3 cycles:
-P(miss all 3 cycles) = (0.821)^3 ≈ 0.554
-P(catch at least once in 3 cycles) = 1 - 0.554 ≈ 44.6%
+Over 3 cycles (1 scan attempt each):
+P(miss all 3) = (0.342)^3 ≈ 4.0%
+P(catch at least once) = 1 - 0.04 ≈ 96.0%
 ```
+
+**Key insight**: With 50ms sleep, the binary is detectable 96% of the time — the
+sleep window is too short relative to the execute window. A production implant
+using 60-second sleep would have P(catch) = 100/60100 ≈ 0.17% per scan, making
+detection nearly impossible with periodic scanning alone.
 
 However, this assumes the scan times are uniformly distributed relative to cycle phase. In practice, if the scanner and sleep cycles are not synchronized, some scans will consistently miss the vulnerable window (phase alignment). The real probability depends on the phase relationship between the two periodic processes.
 
