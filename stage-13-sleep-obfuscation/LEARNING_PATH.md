@@ -132,7 +132,7 @@ main()
   |
   +--> Gate 3: KUSER_SHARED_DATA uptime check
   |      Read TickCountQuad from 0x7FFE0320 (kernel-mapped, no API call).
-  |      Bail if system uptime < 5 minutes (sandbox fast-forward detection).
+  |      Bail if TickCountQuad < 300,000 (~78 minutes uptime).
   |
   +--> Gate 4: run_window_lifecycle()
   |      RegisterClassW("PwrMgrWnd") + CreateWindowExW(1x1, hidden)
@@ -185,7 +185,7 @@ Compile-time:                        Runtime (after 7 gates):
 +---------------------------+        +---------------------------+
 | ENCRYPTED_SHELLCODE       |        | shellcode (decrypted)     |
 | [0x31, 0xf5, 0x29, 0xa0, ...] (302 bytes) |  XOR   | [0xe9, 0xbe, 0x00, 0x00, ...] (JMP shellcode) |
-| (302 bytes, XOR'd)          | -----> | xor eax,eax; ret          |
+| (302 bytes, XOR'd)          | -----> | E9 BE 00 00 (JMP shellcode)|
 +---------------------------+  KEY   +---------------------------+
                                |
                     XOR_KEY (16 bytes):
@@ -199,11 +199,11 @@ The `xor::xor_inplace()` function from the common library applies the key cyclic
 
 ```
 shellcode[0] = 0xe9 ^ 0xd8 = 0x31  (xor opcode)
-shellcode[1] = 0x8b ^ 0x4b = 0xc0  (eax, eax operand)
-shellcode[2] = 0xea ^ 0x29 = 0xc3  (ret opcode)
+shellcode[1] = 0xf5 ^ 0x4b = 0xbe  (JMP offset low byte)
+shellcode[2] = 0x29 ^ 0x29 = 0x00  (JMP offset high byte)
 ```
 
-Result: `31 C0 C3` = `MessageBox("GoodBoy") shellcode` — a 302-byte no-op shellcode payload that zeroes EAX and returns.
+Result: `E9 BE 00 00 ...` = 302-byte MessageBox("GoodBoy") shellcode starting with JMP +0xBE (same payload as all stages).
 
 ### Why XOR Instead of AES or RC4?
 
@@ -447,7 +447,7 @@ wait(thread, 0xFFFFFFFF);       // INFINITE wait
 close(thread);                   // CloseHandle
 ```
 
-The shellcode payload (`MessageBox("GoodBoy") shellcode`) zeroes EAX and returns, making the thread exit cleanly with code 0.
+The 302-byte shellcode displays a MessageBox("GoodBoy") dialog and then calls ExitProcess, terminating the process cleanly.
 
 ### Breadcrumb Trail
 
@@ -690,7 +690,7 @@ CYCLE START (payload is currently RX — executable, decrypted)
   │    Payload is now encrypted noise in RW memory.
   │    Shannon entropy jumps from ~4.5 (code) to ~8.0 (random).
   │
-  ├─ Sleep(50)                                     // 2 seconds (production value)
+  ├─ Sleep(50)                                     // 50ms per cycle
   │    Thread is suspended by the OS scheduler.
   │    During this 50ms window:
   │      - Memory region is RW (non-executable)
@@ -749,12 +749,12 @@ Timing Analysis per Cycle:
   T_sleep    = 50ms   (Sleep() call)
   T_decrypt  ≈ <1ms    (XOR 302 bytes — negligible)
   T_execute  ≈ 100ms   (VirtualProtect RW→RX + any pre-execution work)
-  T_total    = T_encrypt + T_sleep + T_decrypt + T_execute ≈ 2100ms
+  T_total    = T_encrypt + T_sleep + T_decrypt + T_execute ≈ 152ms
 
   Payload visible window: T_execute ≈ 100ms
   Payload hidden window:  T_sleep  ≈ 50ms
 
-  P(catch in one cycle) = T_execute / T_total ≈ 100 / 2100 ≈ 4.8%
+  P(catch in one cycle) = T_execute / T_total ≈ 100 / 152 ≈ 65.8%
   P(miss in one cycle)  = 1 - 0.048 = 0.952
 
 For 3 cycles (assuming single random-time scan):
@@ -1104,14 +1104,14 @@ Scanner at 200ms interval: probability of catching the plaintext between cycles 
 <details>
 <summary>Detailed calculation</summary>
 
-Each cycle has a ~100ms vulnerable window (payload decrypted + RX) out of ~2100ms total cycle time.
+Each cycle has a ~100ms vulnerable window (payload decrypted + RX) out of ~152ms total cycle time.
 
-Scanner runs at fixed 500ms intervals. Per cycle, the scanner fires approximately `2100 / 500 ≈ 4.2` times. For each scan, the probability of landing in the 100ms vulnerable window:
+Scanner runs at fixed 500ms intervals. Per cycle, the scanner fires approximately `152 / 500 ≈ 4.2` times. For each scan, the probability of landing in the 100ms vulnerable window:
 
 ```
-P(catch per scan) = 100 / 2100 ≈ 0.048
+P(catch per scan) = 100 / 152 ≈ 0.048
 
-Scans per cycle ≈ 4 (at 500ms intervals within a 2100ms cycle)
+Scans per cycle ≈ 4 (at 500ms intervals within a 152ms cycle)
 P(miss all scans in one cycle) = (1 - 0.048)^4 ≈ 0.821
 P(catch in one cycle) = 1 - 0.821 ≈ 0.179
 
