@@ -229,7 +229,7 @@ Debugger (Stage 09):                Sandbox (Stage 10):
 ┌─────────────────────┐            ┌─────────────────────┐
 │ Analyst is present  │            │ Automated analysis  │
 │ Real-time control   │            │ No human operator   │
-│ Can modify state    │            │ Fixed time window    │
+│ Can modify state    │            │ Fixed time window   │
 │ Real hardware       │            │ Usually virtualized │
 │ Normal environment  │            │ Minimal environment │
 └─────────────────────┘            └─────────────────────┘
