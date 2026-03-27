@@ -79,12 +79,12 @@ Single-Technique Detection:
 ┌──────────────────────┬────────────────────────────┐
 │ Technique            │ Detection                  │
 ├──────────────────────┼────────────────────────────┤
-│ AES decryption       │ Crypto API patterns         │
-│ Anti-debug           │ PEB check hooking           │
-│ Sandbox detection    │ Hook sandbox APIs            │
-│ AMSI bypass          │ AMSI tamper detection        │
-│ Module stomping      │ .text hash comparison        │
-│ Registry persistence │ Sysmon Event 13             │
+│ AES decryption       │ Crypto API patterns        │
+│ Anti-debug           │ PEB check hooking          │
+│ Sandbox detection    │ Hook sandbox APIs          │
+│ AMSI bypass          │ AMSI tamper detection      │
+│ Module stomping      │ .text hash comparison      │
+│ Registry persistence │ Sysmon Event 13            │
 └──────────────────────┴────────────────────────────┘
 ```
 
@@ -194,9 +194,9 @@ An operator might accept these risks when:
 ```
 Phase 1 Defense-in-Depth:
 
-  ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-  │  initial_delay() │────▶│ inline sandbox check│────▶│bail_if_debugged()│
-  │                 │     │                 │     │                 │
+  ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+  │  initial_delay()│────▶│ inline sandbox check│────▶│bail_if_debugged()│
+  │                 │     │                  │     │                 │
   │ Timing gate:    │     │ 3 inline hardware checks (CPU, RAM, uptime):      │     │ 7 checks:       │
   │ Sleep to evade  │     │ CPU, RAM, Disk,  │     │ PEB, NtGlobalFlag│
   │ sandbox timeout │     │ Uptime, Username,│     │ NtQIP ×3, RDTSC │
@@ -207,8 +207,8 @@ Phase 1 Defense-in-Depth:
   │                 │     │ analysis procs,  │     │                 │
   │                 │     │ sleep accel,     │     │                 │
   │                 │     │ cursor, recent   │     │                 │
-  └─────────────────┘     │ Score ≥ 3 → EXIT │     │ Any true → EXIT  │
-                          └─────────────────┘     └────────┬────────┘
+  └─────────────────┘     │ Score ≥ 3 → EXIT │     │ Any true → EXIT │
+                          └──────────────────┘     └────────┬────────┘
                                                            │
                                                            ▼
                                                   ┌─────────────────┐
@@ -575,38 +575,38 @@ Combined with the process having:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ Combined Loader Architecture Principles                  │
+│ Combined Loader Architecture Principles                 │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│ 1. PHASE GATING                                        │
-│    Every phase is a gate — failure = silent exit         │
-│    No error messages, no crashes, just return            │
-│    Analyst must pass ALL gates to see the payload        │
+│ 1. PHASE GATING                                         │
+│    Every phase is a gate — failure = silent exit        │
+│    No error messages, no crashes, just return           │
+│    Analyst must pass ALL gates to see the payload       │
 │                                                         │
-│ 2. TECHNIQUE ORDERING MATTERS                          │
+│ 2. TECHNIQUE ORDERING MATTERS                           │
 │    Cheap checks first (mutex, breakpoints)              │
 │    Broad checks next (sandbox — defeats automation)     │
 │    Specific checks after (anti-debug — defeats analysts)│
 │    Irreversible actions last (persistence, execution)   │
 │                                                         │
-│ 3. NOISE BETWEEN SIGNALS                               │
+│ 3. NOISE BETWEEN SIGNALS                                │
 │    Anti-disassembly between every phase                 │
 │    Junk computation to waste analyst time               │
 │    Dead branch noise to confuse static analysis         │
 │    Decoy operations to mask intent                      │
 │                                                         │
-│ 4. KEY SECURITY IS LAYERED                             │
+│ 4. KEY SECURITY IS LAYERED                              │
 │    Not just encrypted — key itself is obfuscated        │
 │    8 fragment functions → 2 arrays → MBA XOR → key      │
 │    black_box prevents compiler optimization             │
 │    MBA prevents XOR instruction pattern matching        │
 │                                                         │
-│ 5. GRACEFUL DEGRADATION                                │
+│ 5. GRACEFUL DEGRADATION                                 │
 │    Module stomp: 4-DLL fallback chain                   │
 │    Install check without install (ML-safe by default)   │
 │    Every critical operation has an alternative path     │
 │                                                         │
-│ 6. DETECTION REQUIRES CORRELATION                      │
+│ 6. DETECTION REQUIRES CORRELATION                       │
 │    No single IOC identifies this loader                 │
 │    Behavioral correlation across time is needed         │
 │    Mutex + EnvCheck + ProcessEnum + DLL stomp = sig     │
